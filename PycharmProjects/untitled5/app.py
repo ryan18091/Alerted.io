@@ -21,7 +21,7 @@ for sublist in users:
 if email not in UserEmailList:
     print('notin')
     address = json.dumps(Address)
-    c.execute('INSERT INTO Users (ID, First_Name, Last_Name, Address, Email) VALUES (?, ?, ?, ?,?)', (idtag, First_Name, Last_Name,
+    c.execute('INSERT INTO Users (UserID, FirstName, LastName, Address, Email) VALUES (?, ?, ?, ?,?)', (idtag, First_Name, Last_Name,
                                                                                             address, email,))
     conn.commit()
     c.close()
@@ -67,21 +67,34 @@ else:
 print(AlertID)
 
 trigger = '6:15 am' #User input, db
-trigger = datetime.strptime(trigger, "%H:%M %p")
-print(trigger)
+# trigger = datetime.strptime(trigger, "%H:%M %p")
+# print(trigger)
 
 StartWatchTime = '9:00 pm' #User input, db
-StartWatchTime = datetime.strptime(StartWatchTime, "%H:%M %p")
-print(StartWatchTime)
+# StartWatchTime = datetime.strptime(StartWatchTime, "%H:%M %p")
+# print(StartWatchTime)
 
 AmountLow = .05 #User Input, db
 AmountHigh = 2 #user Input, db
 
-Action = {'AlertType': 'SMS', 'Message': 'Standard'} #User Input
+AlertType = 'Time' #Program Generated
+Alert = {'Type': AlertType, 'AlertID': AlertID} #Program Generated
+AlertedType = 'SMS'
+MessageType = 'Standard'
+ActionType = {"AlertType": AlertedType, 'Message Type': MessageType}
 
-AlertType = 'Time'
-Alert = {'Type': AlertType, 'AlertID': AlertID}
+conn = sqlite3.connect('Alerted.db')
+c = conn.cursor()
+c.execute('UPDATE Users SET Alerts = ?  Where email=? ', (str(Alert), str(email),))
+conn.commit()
 
-c.execute('INSERT into')
+c.execute('INSERT INTO TimeTrigger (AlertID, Time, ActionType) VALUES (?,?,?)', (str(AlertID), str(trigger), str(ActionType),))
+conn.commit()
+
+c.execute('INSERT INTO SnowFallCheck (AlertID, StarTime, AmountLow, AmountHigh) VALUES (?,?,?,?)', (str(AlertID), str(StartWatchTime),
+
+                                                                                            str(AmountLow), str(AmountHigh),))
+conn.commit()
+conn.close()
 
 
