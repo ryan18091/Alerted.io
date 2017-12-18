@@ -34,11 +34,23 @@ from random import randint
 
 #Alert Types
 #-Snow Checker prefex 1
-alerttype = 1
+alerttype = 1 #User Input, db
 
 def AlertIDCreate(alerttype):
-    AlertID = alerttype + randint(1, 100000000000000)
+    AlertID = randint(1, 100000000000000)
+    AlertID = [int(x) for x in str(AlertID)]
+    AlertID.insert(0, alerttype)
+    AlertID = ''.join(map(str, AlertID))
+
     return AlertID
+
+def CreateDatetimeObject(t):
+
+    print(type(t))
+    t = datetime.strptime(t, "%H:%M %p")
+    return t
+
+
 
 AlertID = AlertIDCreate(alerttype)
 #checks if AlertID has already been assigned and reasigns if true
@@ -55,9 +67,21 @@ else:
 print(AlertID)
 
 trigger = '6:15 am' #User input, db
-StartWatchTime = '9:00 pm' #User input, db
-
-#creates a datetime object from "user input" trigger time
 trigger = datetime.strptime(trigger, "%H:%M %p")
+print(trigger)
+
+StartWatchTime = '9:00 pm' #User input, db
+StartWatchTime = datetime.strptime(StartWatchTime, "%H:%M %p")
+print(StartWatchTime)
+
+AmountLow = .05 #User Input, db
+AmountHigh = 2 #user Input, db
+
+Action = {'AlertType': 'SMS', 'Message': 'Standard'} #User Input
+
+AlertType = 'Time'
+Alert = {'Type': AlertType, 'AlertID': AlertID}
+
+c.execute('INSERT into')
 
 
