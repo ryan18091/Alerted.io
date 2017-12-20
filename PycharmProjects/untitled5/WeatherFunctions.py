@@ -101,7 +101,7 @@ def newZipcode(zipcode):
     c.execute('INSERT INTO  WeatherData (Zipcode, SnowFall) VALUES (?,?)', (zipcode, str(snowfall),))
     conn.commit()
 
-def SnowFallAmount(hours, zipcode, AmountLow, AmountHigh, AlertVars, AlertCat):
+def SnowFallAmount(hours, zipcode, AmountLow, AmountHigh, AlertVars, AlertCat, AlertTime, SnowFallStartTime):
     conn = sqlite3.connect('Alerted.db')
     c = conn.cursor()
     c.execute('SELECT SnowFall From WeatherData Where Zipcode=?', (zipcode,))
@@ -113,9 +113,10 @@ def SnowFallAmount(hours, zipcode, AmountLow, AmountHigh, AlertVars, AlertCat):
     TotalSnowFall = sum(snowfall)
     #Checks to see if TotalSnow Fall falls between Low and High Amount and triggers Alert Type:
     if TotalSnowFall < AmountHigh and TotalSnowFall > AmountLow:
+        SMSVars = [AlertVars, AlertCat, AlertTime, SnowFallStartTime, TotalSnowFall, zipcode]
         if AlertVars['AlertType'] == 'SMS':
             from TwillioSMS import SMS
-            SMS(AlertVars, AlertCat)
+            SMS(SMSVars)
             pass
         elif AlertVars['AlertType'] == 'Email':
             pass
@@ -126,6 +127,7 @@ def SnowFallAmount(hours, zipcode, AmountLow, AmountHigh, AlertVars, AlertCat):
 
 #Returns true of false if snow fall amount over specific time equals given value
 def WeatherBoolean(line,time, AlertVars, AlertCat):
+    print(line)
     conn = sqlite3.connect('Alerted.db')
     c = conn.cursor()
     zipcode = line[5]
@@ -140,11 +142,12 @@ def WeatherBoolean(line,time, AlertVars, AlertCat):
     AmoutnHigh = SnowFallReqs[3]
     conn.close()
     SnowFallStartTime = datetime.strptime(SnowFallReqs[1], '%H:%M')
+    print(SnowFallStartTime)
     td = time - SnowFallStartTime
     t = ((td.seconds/60)/60)
     hours = (round(t))
 
-    SnowFallAmount(hours, zipcode, AmountLow, AmoutnHigh, AlertVars, AlertCat)
+    SnowFallAmount(hours, zipcode, AmountLow, AmoutnHigh, AlertVars, AlertCat, AlertTime, SnowFallStartTime)
 
 
 
