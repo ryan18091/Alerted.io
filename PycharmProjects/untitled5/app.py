@@ -88,7 +88,11 @@ c = conn.cursor()
 c.execute('UPDATE Users SET Alerts = ?  Where email=? ', (str(Alert), str(email),))
 conn.commit()
 
-c.execute('INSERT INTO TimeTrigger (AlertID, Time, ActionType) VALUES (?,?,?)', (str(AlertID), str(trigger), str(ActionType),))
+c.execute('INSERT INTO TimeTrigger (AlertID, Time, ActionType, UserID, UserZip) VALUES (?,?,?)', (str(AlertID),
+                                                                                                  str(trigger),
+                                                                                                  str(ActionType),
+                                                                                                  str(idtag),
+                                                                                                  (Address['zipcode'])))
 conn.commit()
 
 c.execute('INSERT INTO SnowFallCheck (AlertID, StarTime, AmountLow, AmountHigh) VALUES (?,?,?,?)', (str(AlertID), str(StartWatchTime),
