@@ -15,10 +15,10 @@ from time import sleep
 #  factor of about 20 instead.
 
 #
-sleep(3600)
+# sleep(3600)
 from UserZipcodes import zipcodes
 
-#fethec weather data through weather underground api and inserts it into the db
+#fetches weather data through weather underground api and inserts it into the db
 for zipcode in zipcodes:
 
     #create a list of currently tracked zipcodes
@@ -50,6 +50,7 @@ for zipcode in zipcodes:
     SnowFall(weather, zipcode)
 
 
+
 zipcode = str(55124)
 conn = sqlite3.connect('Alerted.db')
 c = conn.cursor()
@@ -59,9 +60,6 @@ c.execute('SELECT Weather From WeatherData WHERE Zipcode = ?', (zipcode,))
 weather = c.fetchone()
 p = ''.join(weather)
 t = ast.literal_eval(p)
-
-obstime = t["observation_time_rfc822"]
-print(obstime)
 
 from WeatherFunctions import *
 SnowFall(t,zipcode)
